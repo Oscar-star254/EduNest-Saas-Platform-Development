@@ -1,0 +1,14 @@
+{
+  "title": "EduNest — The operating system for your school",
+  "description": "Comprehensive multi-school management platform offering role-based dashboards, attendance, academics, fees, communication, and analytics for Kenyan schools.",
+  "icons": {
+    "icon": "/brand/edunest-symbol.svg"
+  },
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

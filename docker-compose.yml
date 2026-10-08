@@ -1,0 +1,47 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backend:
+    build: ./backend
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-local-compose-secret}
+      CORS_ORIGINS: http://localhost:8080
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/v1/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      - mongo
+      - redis
+
+  worker:
+    build: ./backend
+    command: ["python", "-c", "import time; print('EduNest sandbox worker ready', flush=True); time.sleep(1000000)"]
+    depends_on:
+      - redis
+
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mongo_data:
+  redis_data:
